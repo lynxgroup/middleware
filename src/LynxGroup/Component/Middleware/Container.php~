@@ -1,0 +1,38 @@
+<?php namespace Container;
+
+class Container implements \Container\IContainer
+{
+	protected $services = [];
+
+	public function set($abstract, $concrete)
+	{
+		$this->services[$abstract] = $concrete;
+
+		return $this;
+	}
+
+	public function factory($abstract, $concrete, $args = [], $callback = null)
+	{
+		return $this->set($abstract, new \Container\Factory($concrete, $args, $callback));
+	}
+
+	public function singleton($abstract, $concrete, $args = [], $callback = null)
+	{
+		return $this->set($abstract, new \Container\Singleton($concrete, $args, $callback));
+	}
+
+	public function __set($abstract, $concrete)
+	{
+		$this->services[$abstract] = $concrete;
+	}
+
+	public function &__get($abstract)
+	{
+		return $this->services[$abstract];
+	}
+
+	public function __call($abstract, $args)
+	{
+		return call_user_func_array($this->services[$abstract], $args);
+	}
+}

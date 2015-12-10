@@ -1,0 +1,5 @@
+<?php namespace Container;
+
+interface IContainer extends \IteratorAggregate
+{
+}

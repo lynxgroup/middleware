@@ -1,0 +1,9 @@
+<?php namespace Container;
+
+class Factory extends \Container\Reflector
+{
+	public function __invoke(array $args = [])
+	{
+		return $this->factory($args);
+	}
+}

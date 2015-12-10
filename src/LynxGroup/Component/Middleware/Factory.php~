@@ -1,0 +1,81 @@
+<?php namespace Container;
+
+class Reflector extends \ReflectionClass implements \Container\IReflector
+{
+	protected $args;
+
+	protected $callback;
+
+	protected $instance;
+
+	public function __construct($name, callable $args = null, callable $callback = null)
+	{
+		parent::__construct($name);
+
+		$this->args = $args;
+
+		$this->callback = $callback;
+	}
+
+	public function getArgs(array $args = [])
+	{
+		return array_merge($this->args ? call_user_func($this->args) : [], $args);
+	}
+
+	public function resolveArgs(array $parameters, array $args = [])
+	{
+		$_args = [];
+
+		foreach( $parameters as $parameter )
+		{
+			$_args[$parameter->getName()] = isset($args[$parameter->getName()]) ? $args[$parameter->getName()] : (
+				$parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null
+			);
+		}
+
+		return $_args;
+	}
+
+	public function factory(array $args = [])
+	{
+		if( $this->getConstructor() )
+		{
+			$instance = $this->newInstanceArgs(
+				$this->resolveArgs($this->getConstructor()->getParameters(), $this->getArgs($args))
+			);
+		}
+		else
+		{
+			$instance = $this->newInstance();
+		}
+
+		if( $this->callback )
+		{
+			call_user_func($this->callback, $instance);
+		}
+
+		return $instance;
+	}
+
+	public function singleton(array $args = [])
+	{
+		if( !$this->instance )
+		{
+			$this->instance = $this->factory($args);
+		}
+
+		return $this->instance;
+	}
+
+	public function __invoke(array $args = [])
+	{
+		return $this->factory($args);
+	}
+
+	public function invoke_method($instance, $method, array $args = [])
+	{
+		return $this->getMethod($method)->invokeArgs($instance, $this->resolveArgs(
+			$this->getMethod($method)->getParameters(), $args)
+		);
+	}
+}
