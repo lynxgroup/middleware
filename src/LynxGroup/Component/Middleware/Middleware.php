@@ -28,7 +28,7 @@ class Middleware implements MiddlewareInterface
  
 		$middleware = $this->resolve($entry);
 
-		return $middleware($request, $response, $this);
+		return $middleware($request, $response, $this); 
 	}
 
 	public function resolve($entry)
