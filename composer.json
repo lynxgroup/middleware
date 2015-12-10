@@ -1,7 +1,7 @@
 {
     "name": "lynxgroup/middleware",
     "type": "library",
-    "description": "psr-7 implementation",
+    "description": "middleware implementation",
     "require": {
         "php": ">=5.5.0"
     },
