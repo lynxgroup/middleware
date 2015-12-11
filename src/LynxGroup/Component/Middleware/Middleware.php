@@ -1,6 +1,6 @@
 <?php namespace LynxGroup\Component\Middleware;
 
-use LynxGroup\Contracts\Middleware\MiddlewareInterface;
+use LynxGroup\Contracts\Middleware\Middleware as MiddlewareInterface;
 
 use Psr\Http\Message\RequestInterface;
 
